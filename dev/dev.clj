@@ -9,7 +9,6 @@
    [criterium.core :refer [quick-bench]]
    [formatting-stack.branch-formatter :refer [format-and-lint-branch! lint-branch!]]
    [formatting-stack.compilers.test-runner :refer [test!]]
-   [formatting-stack.component]
    [formatting-stack.project-formatter :refer [format-and-lint-project! lint-project!]]
    [lambdaisland.deep-diff]))
 

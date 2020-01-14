@@ -1,13 +1,12 @@
 (ns nedap.blocking-queues.test-runner
   (:require
    [cljs.nodejs :as nodejs]
-   [nedap.utils.test.api :refer-macros [run-tests]]
-   [unit.nedap.blocking-queues.api]))
+   [functional.nedap.blocking-queues.api]
+   [nedap.utils.test.api :refer-macros [run-tests]]))
 
 (nodejs/enable-util-print!)
 
 (defn -main []
-  (run-tests
-   'unit.nedap.blocking-queues.api))
+  (run-tests 'functional.nedap.blocking-queues.api))
 
 (set! *main-cli-fn* -main)

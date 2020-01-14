@@ -30,21 +30,33 @@ jobs:
     steps:
       - setup-env
       - run:
-          name: 'Run JVM tests, reporting coverage'
-          command: lein with-profile -dev,+test trampoline cloverage --lcov --junit -o coverage/
-      - run:
           name: 'Ensure artifact isolation, inform of boxed math'
           command: lein with-profile -dev,+check check
+      - run:
+          name: 'Run JVM tests, reporting coverage'
+          command: lein with-profile -dev,+test do clean, trampoline cloverage --lcov --junit -o coverage/
       - store_test_results:
           path: ~/repo/coverage
       - store_artifacts:
           path: ~/repo/coverage
+      - run:
+          name: 'Run JVM tests, under the default runner'
+          command: lein with-profile -dev do clean, test
+      - run:
+          name: 'Run JVM tests, in a production-like setting'
+          command: lein with-profile -dev,+production do clean, test
       - run:
           name: 'Compile ClojureScript test suite'
           command: lein with-profile -dev,+test do clean, cljsbuild once test
       - run:
           name: 'Run node.js tests'
           command: node target/out/tests.js
+      - run:
+          name: 'Compile ClojureScript test suite, in a production-like setting'
+          command: lein with-profile -dev,+test do clean, cljsbuild once test-no-assert
+      - run:
+          name: 'Run node.js tests, in a production-like setting'
+          command: node target/no-assert/out/tests.js
   deploy:
     executor: lein-executor
     steps:
