@@ -48,14 +48,14 @@
   ;; It also interferes with Cloverage.
   :cljsbuild {:builds {"test"           {:source-paths ["src" "test"]
                                          :compiler     {:main          nedap.blocking-queues.test-runner
-                                                        :output-to     "target/out/tests.js"
-                                                        :output-dir    "target/out"
+                                                        :output-to     "target/test/out/tests.js"
+                                                        :output-dir    "target/test/out"
                                                         :target        :nodejs
                                                         :optimizations :none}}
                        "test-no-assert" {:source-paths ["src" "test"]
                                          :compiler     {:main            nedap.blocking-queues.test-runner
-                                                        :output-to       "target/no-assert/out/tests.js"
-                                                        :output-dir      "target/no-assert/out"
+                                                        :output-to       "target/test-no-assert/out/tests.js"
+                                                        :output-dir      "target/test-no-assert/out"
                                                         :target          :nodejs
                                                         :elide-asserts   true
                                                         :closure-defines {"functional.nedap.blocking_queues.api.ASSERT" false}
@@ -96,7 +96,8 @@
                                          [com.google.protobuf/protobuf-java "3.4.0" #_"transitive"]
                                          [com.cognitect/transit-clj "0.8.313" #_"transitive"]
                                          [com.google.errorprone/error_prone_annotations "2.1.3" #_"transitive"]
-                                         [com.google.code.findbugs/jsr305 "3.0.2" #_"transitive"]]}
+                                         [com.google.code.findbugs/jsr305 "3.0.2" #_"transitive"]
+                                         [org.clojure/tools.reader "1.3.2"]]}
 
              :check      {:global-vars {*unchecked-math* :warn-on-boxed
                                         ;; avoid warnings that cannot affect production:
