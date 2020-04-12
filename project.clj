@@ -1,14 +1,18 @@
 ;; Please don't bump the library version by hand - use ci.release-workflow instead.
 (defproject com.nedap.staffing-solutions/blocking-queues "unreleased"
   ;; Please keep the dependencies sorted a-z.
-  :dependencies [[com.nedap.staffing-solutions/speced.def "1.2.0"]
-                 [org.clojure/clojure "1.10.1"]]
+  :dependencies [[com.nedap.staffing-solutions/speced.def "2.0.0-alpha1"]
+                 [org.clojure/clojure "1.10.1"]
+                 [org.clojure/core.async "0.7.559"]]
 
   :description "A safer subset of j.u.c.BlockingQueue / clojure.core.async."
 
   :url "https://github.com/nedap/blocking-queues"
 
   :min-lein-version "2.0.0"
+
+  :license {:name "EPL-2.0"
+            :url  "https://www.eclipse.org/legal/epl-2.0/"}
 
   :signing {:gpg-key "releases-staffingsolutions@nedap.com"}
 
@@ -42,12 +46,20 @@
 
   ;; Please don't add `:hooks [leiningen.cljsbuild]`. It can silently skip running the JS suite on `lein test`.
   ;; It also interferes with Cloverage.
-  :cljsbuild {:builds {"test" {:source-paths ["src" "test"]
-                               :compiler     {:main          nedap.blocking-queues.test-runner
-                                              :output-to     "target/out/tests.js"
-                                              :output-dir    "target/out"
-                                              :target        :nodejs
-                                              :optimizations :none}}}}
+  :cljsbuild {:builds {"test"           {:source-paths ["src" "test"]
+                                         :compiler     {:main          nedap.blocking-queues.test-runner
+                                                        :output-to     "target/test/out/tests.js"
+                                                        :output-dir    "target/test/out"
+                                                        :target        :nodejs
+                                                        :optimizations :none}}
+                       "test-no-assert" {:source-paths ["src" "test"]
+                                         :compiler     {:main            nedap.blocking-queues.test-runner
+                                                        :output-to       "target/test-no-assert/out/tests.js"
+                                                        :output-dir      "target/test-no-assert/out"
+                                                        :target          :nodejs
+                                                        :elide-asserts   true
+                                                        :closure-defines {"functional.nedap.blocking_queues.api.ASSERT" false}
+                                                        :optimizations   :none}}}}
 
   ;; A variety of common dependencies are bundled with `nedap/lein-template`.
   ;; They are divided into two categories:
@@ -62,12 +74,12 @@
                                          [com.clojure-goes-fast/clj-java-decompiler "0.2.1"]
                                          [com.nedap.staffing-solutions/utils.modular "2.0.0"]
                                          [com.nedap.staffing-solutions/utils.spec.predicates "1.1.0"]
+                                         [com.stuartsierra/component "0.4.0"]
                                          [com.taoensso/timbre "4.10.0"]
                                          [criterium "0.4.5"]
                                          [formatting-stack "1.0.1"]
                                          [lambdaisland/deep-diff "0.0-29"]
                                          [medley "1.2.0"]
-                                         [org.clojure/core.async "0.7.559"]
                                          [org.clojure/math.combinatorics "0.1.1"]
                                          [org.clojure/test.check "0.10.0-alpha3"]
                                          [org.clojure/tools.namespace "0.3.1"]]
@@ -84,14 +96,13 @@
                                          [com.google.protobuf/protobuf-java "3.4.0" #_"transitive"]
                                          [com.cognitect/transit-clj "0.8.313" #_"transitive"]
                                          [com.google.errorprone/error_prone_annotations "2.1.3" #_"transitive"]
-                                         [com.google.code.findbugs/jsr305 "3.0.2" #_"transitive"]]}
+                                         [com.google.code.findbugs/jsr305 "3.0.2" #_"transitive"]
+                                         [org.clojure/tools.reader "1.3.2"]]}
 
              :check      {:global-vars {*unchecked-math* :warn-on-boxed
                                         ;; avoid warnings that cannot affect production:
                                         *assert*         false}}
 
-             ;; some settings recommended for production applications.
-             ;; Note that the :production profile is not activated in any way, by default.
              :production {:jvm-opts    ["-Dclojure.compiler.elide-meta=[:doc :file :author :line :added :deprecated :nedap.speced.def/spec :nedap.speced.def/nilable]"
                                         "-Dclojure.compiler.direct-linking=true"
                                         "-Dclojure.read.eval=false"]
